@@ -1,0 +1,36 @@
+# Environment
+.env
+venv/
+.venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Runtime data
+database/events.db
+logs/
+snapshots/
+evidence/
+uploads/
+temp_frame.jpg
+
+# Models (large files — download at runtime)
+models/*.pt
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.pem
+credentials.json

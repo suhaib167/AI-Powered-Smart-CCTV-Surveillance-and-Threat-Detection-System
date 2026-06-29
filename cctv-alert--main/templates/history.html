@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Smart CCTV | Detection History</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>Detection History</h1>
+        <div class="nav-links">
+            <a href="/">Dashboard</a>
+            <a href="/history" class="active">History</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="filter-panel">
+            <h2>Filter Events</h2>
+            <form method="get" action="/history" class="filter-form">
+                <label>
+                    Date (YYYY-MM-DD)
+                    <input type="date" name="date" value="{{ date_filter }}">
+                </label>
+                <label>
+                    Object / Event Type
+                    <input type="text" name="type" placeholder="e.g. object:knife" value="{{ event_type }}">
+                </label>
+                <label>
+                    Min Confidence (0-1)
+                    <input type="number" name="confidence" step="0.01" min="0" max="1"
+                           placeholder="0.5" value="{{ min_confidence }}">
+                </label>
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="/history" class="btn btn-secondary">Clear</a>
+            </form>
+        </section>
+
+        <section class="chart-card">
+            <h3>Events by Type</h3>
+            <canvas id="historyChart" height="120"></canvas>
+        </section>
+
+        <section class="history-table-panel">
+            <h2>Detection Records ({{ events|length }})</h2>
+            <div class="table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Event Type</th>
+                            <th>Confidence</th>
+                            <th>Timestamp</th>
+                            <th>Location</th>
+                            <th>Snapshot</th>
+                            <th>Video</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>{{ event.id }}</td>
+                            <td><span class="badge">{{ event.event_type }}</span></td>
+                            <td>
+                                {% if event.confidence is not none %}
+                                    {{ "%.1f"|format(event.confidence * 100) }}%
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </td>
+                            <td>{{ event.timestamp }}</td>
+                            <td>
+                                {% if event.latitude and event.longitude %}
+                                <a href="https://maps.google.com/?q={{ event.latitude }},{{ event.longitude }}"
+                                   target="_blank" rel="noopener">
+                                    {{ "%.4f"|format(event.latitude) }}, {{ "%.4f"|format(event.longitude) }}
+                                </a>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>
+                                {% if event.image_path %}
+                                {% set img_name = event.image_path.split('/')[-1].split('\\')[-1] %}
+                                <a href="{{ url_for('serve_snapshot', filename=img_name) }}" target="_blank">
+                                    <img src="{{ url_for('serve_snapshot', filename=img_name) }}"
+                                         alt="Snapshot" class="thumb">
+                                </a>
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>
+                                {% if event.video_path %}
+                                {% set vid_name = event.video_path.split('/')[-1].split('\\')[-1] %}
+                                <a href="{{ url_for('serve_evidence', filename=vid_name) }}" target="_blank">View</a>
+                                {% else %}—{% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="7" class="empty">No events found for the selected filters.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/history.js') }}"></script>
+</body>
+</html>

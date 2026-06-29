@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Smart CCTV | Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>AI Smart CCTV Surveillance</h1>
+        <div class="nav-links">
+            <a href="/" class="active">Dashboard</a>
+            <a href="/history">History</a>
+            <a href="/api/health" target="_blank">Health API</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Events</h3>
+                <p class="stat-value">{{ stats.total_events }}</p>
+            </div>
+            <div class="stat-card threat">
+                <h3>Threats Detected</h3>
+                <p class="stat-value">{{ stats.threats_detected }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Known Faces</h3>
+                <p class="stat-value">{{ stats.known_faces }}</p>
+            </div>
+            <div class="stat-card">
+                <h3>Unknown Faces</h3>
+                <p class="stat-value">{{ stats.unknown_faces }}</p>
+            </div>
+            <div class="stat-card alert">
+                <h3>Alerts Sent</h3>
+                <p class="stat-value">{{ stats.alerts_sent }}</p>
+            </div>
+        </section>
+
+        <section class="charts-row">
+            <div class="chart-card">
+                <h3>Event Distribution</h3>
+                <canvas id="eventsChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Session Activity</h3>
+                <canvas id="sessionChart"></canvas>
+            </div>
+        </section>
+
+        <section class="controls-panel">
+            <h2>Surveillance Controls</h2>
+            <form action="/start_camera" method="post" class="control-form">
+                <button type="submit" class="btn btn-primary">Start Live Camera</button>
+            </form>
+            <form action="/upload_video" method="post" enctype="multipart/form-data" class="control-form">
+                <input type="file" name="video" accept="video/*" required>
+                <button type="submit" class="btn btn-secondary">Upload Video</button>
+            </form>
+        </section>
+
+        <section class="stream-panel">
+            <h2>Live Stream</h2>
+            <div class="stream-wrapper">
+                <img src="{{ url_for('video_feed') }}" alt="Live surveillance feed" class="live-stream">
+            </div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script>
+        window.dashboardStats = {
+            total: {{ stats.total_events }},
+            threats: {{ stats.threats_detected }},
+            known: {{ stats.known_faces }},
+            unknown: {{ stats.unknown_faces }},
+            alerts: {{ stats.alerts_sent }},
+            sessionDetections: {{ stats.session_detections | default(0) }},
+            sessionAlerts: {{ stats.session_alerts | default(0) }}
+        };
+    </script>
+</body>
+</html>
