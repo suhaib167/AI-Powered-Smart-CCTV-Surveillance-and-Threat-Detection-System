@@ -4,11 +4,10 @@ from ultralytics import YOLO
 import cv2
 
 # Model path
-MODEL_PATH = r"s:\Mohamed Suhaib\Downloads\best.pt\Weapons-and-Knives-Detector-with-YOLOv8-main\runs\detect\Haar_Compressed\weights\best.pt"
+MODEL_PATH = r"XXXXXXXXXXXXXX"
 
 
-
-MODEL_URL = "https://github.com/mohamed-suhaib-ai/Weapons-and-Knives-Detector-with-YOLOv8/releases/download/model/best.pt"
+MODEL_URL = "xxxxxxxxxxxxx"
 
 # Auto-download model if not found
 if not os.path.exists(MODEL_PATH):
