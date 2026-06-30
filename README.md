@@ -1,4 +1,4 @@
-# AI Smart CCTV Surveillance System
+# AI-Powered-Smart-CCTV-Surveillance-and-Threat-Detection-System
 
 A production-oriented AI-powered surveillance platform that combines real-time object detection (YOLO), face recognition (DeepFace), behavior analysis, motion/intrusion detection, and multi-channel alerting (Email, Telegram, sound) with a Flask web dashboard.
 
